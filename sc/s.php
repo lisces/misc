@@ -1,11 +1,7 @@
 <?php
 class s {
-  public function __construct(){
-
-  }
-
-  public function init(){
+  public function __construct($argv){
 
   }
 }
-new s();
+new s($argv);
