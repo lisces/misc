@@ -9,14 +9,15 @@ define('LIB_DIR',  ROOT_DIR . 'lib'  . DIRECTORY_SEPARATOR);
 define('LOG_DIR',  ROOT_DIR . 'log'  . DIRECTORY_SEPARATOR);
 
 require(CORE_DIR . 'load.php');
-require(CORE_DIR . 'init.php');
 
-/**
 class c {
-  private $argv;
-  public function __construct($argv){
-    $this->argv = $argv;
+  public function __construct(){
     $this->_sudo();
+    $this->_init();
+    $this->_ps();
+    for($i=0;;$i++){
+      $this->start();
+    }
   }
 
   private function _sudo(){
@@ -24,6 +25,31 @@ class c {
     exec($cmd, $res, $rc);
     return true;
   }
+
+  private function _init(){
+    if(!is_dir(LOG_DIR)){
+      if(!touch(LOG_DIR)){
+        $errorInfo = lang::instance()->bind(array('logdir' => LOG_DIR))->get(0);
+        KLogger::instance(LOG_DIR, 'error')->logError($errorInfo);
+        echo $errorInfo . "\n";exit;
+      }
+    }
+    if(!is_writable(LOG_DIR)){
+      $errorInfo = lang::instance()->bind(array('logdir' => LOG_DIR))->get(1);
+      KLogger::instance(LOG_DIR, 'error')->logError($errorInfo);
+      echo $errorInfo . "\n";exit;
+    }
+    return true;
+  }
+
+  private function _ps(){
+    $cmd = 'ps aux | grep c.php';
+    exec($cmd, $res, $rc);
+    print_r($res);
+  }
+
+  public function start(){
+
+  }
 }
-new c($argv);
-**/
+new c();
